@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="sr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Matematika sa Tamarom</title>
+<meta name="description" content="Matematika sa Tamarom — mesto gde zajedno gradimo znanje, samopouzdanje i ljubav prema matematici. Časovi i besplatni materijali za 5–8. razred.">
+<meta name="theme-color" content="#f4f3ee">
+<meta property="og:title" content="Matematika sa Tamarom">
+<meta property="og:description" content="Znanje koje se gradi korak po korak — mera po mera, crta po crta.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231a1a18'/%3E%3Cpath d='M14 48 L32 14 L50 48 Z' fill='none' stroke='%23f4f3ee' stroke-width='4'/%3E%3Ccircle cx='32' cy='37' r='6' fill='none' stroke='%23f4f3ee' stroke-width='3'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f4f3ee; --paper-2:#ebe9e1; --ink:#1a1a18; --ink-2:#3b3a36; --muted:#77756d;
+  --line:rgba(26,26,24,.14); --line-2:rgba(26,26,24,.28);
+  --bp:#1d46c9; --bp-deep:#16359a; --bp-line:rgba(255,255,255,.18);
+  --red:#d2432a;
+  --serif:"Instrument Serif", Georgia, serif;
+  --sans:"Inter Tight", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, monospace;
+  --gut:clamp(16px,4vw,56px);
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+::selection{background:var(--bp);color:#fff}
+.wrap{padding-inline:var(--gut);max-width:1600px;margin-inline:auto}
+.mono{font-family:var(--mono);font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+.label{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.label::before{content:"( "}.label::after{content:" )"}
+h1,h2,h3{font-weight:400;line-height:1}
+.serif{font-family:var(--serif)}
+em,.it{font-family:var(--serif);font-style:italic;font-weight:400}
+
+/* grain paper */
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;opacity:.35;mix-blend-mode:multiply;
+background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .08 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* ---------- preloader ---------- */
+.loader{position:fixed;inset:0;z-index:300;background:var(--ink);color:var(--paper);display:grid;place-items:center}
+.loader svg{width:min(220px,50vw);overflow:visible}
+.loader .c{fill:none;stroke:var(--paper);stroke-width:1.2;stroke-dasharray:629;stroke-dashoffset:629}
+.loader .ax{stroke:rgba(244,243,238,.25);stroke-width:1}
+.loader .arm{stroke:var(--paper);stroke-width:1.2;transform-origin:110px 110px}
+.loader-txt{position:absolute;left:var(--gut);right:var(--gut);bottom:var(--gut);display:flex;justify-content:space-between;align-items:flex-end;gap:16px}
+.loader-pi{font-family:var(--mono);font-size:12px;letter-spacing:.08em;opacity:.7;white-space:nowrap;overflow:hidden;max-width:60vw}
+.loader-n{font-family:var(--serif);font-size:clamp(56px,10vw,140px);line-height:.8}
+html:not(.js) .loader{display:none}
+
+/* ---------- cursor ---------- */
+.cursor{position:fixed;left:0;top:0;z-index:250;pointer-events:none;display:none}
+.cursor .h,.cursor .v{position:absolute;background:var(--ink)}
+.cursor .h{width:22px;height:1px;left:-11px;top:0}
+.cursor .v{width:1px;height:22px;left:0;top:-11px}
+.cursor .r{position:absolute;width:34px;height:34px;left:-17px;top:-17px;border:1px solid var(--ink);border-radius:50%;transform:scale(0);transition:transform .35s var(--ease)}
+.cursor.hover .r{transform:scale(1)}
+.cursor .t{position:absolute;left:14px;top:10px;font-family:var(--mono);font-size:10px;white-space:nowrap;color:var(--ink);opacity:.8}
+@media (hover:hover) and (pointer:fine){.cursor{display:block}}
+
+/* ---------- nav ---------- */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;transition:transform .5s var(--ease),background .3s}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:76px;gap:24px}
+.nav.scrolled{background:rgba(244,243,238,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav.hide{transform:translateY(-100%)}
+.brand{display:flex;flex-direction:column;line-height:1.05}
+.brand b{font-family:var(--serif);font-weight:400;font-size:24px}
+.brand span{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.links{display:flex;gap:30px;font-size:14px}
+.links a{position:relative;padding:4px 0}
+.links a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .5s var(--ease)}
+.links a:hover::after{transform:scaleX(1);transform-origin:left}
+.btn{display:inline-flex;align-items:center;gap:10px;height:46px;padding:0 22px;border-radius:999px;border:1px solid var(--ink);font-size:14px;position:relative;overflow:hidden;isolation:isolate;transition:color .45s var(--ease)}
+.btn::before{content:"";position:absolute;inset:0;background:var(--ink);transform:translateY(101%);transition:transform .5s var(--ease);z-index:-1;border-radius:inherit}
+.btn:hover{color:var(--paper)}
+.btn:hover::before{transform:none}
+.btn.solid{background:var(--ink);color:var(--paper)}
+.btn.solid::before{background:var(--bp)}
+.btn .arr{transition:transform .5s var(--ease)}
+.btn:hover .arr{transform:translateX(4px) rotate(-45deg)}
+.burger{display:none;width:46px;height:46px;border-radius:50%;border:1px solid var(--ink);position:relative}
+.burger i{position:absolute;left:14px;right:14px;height:1px;background:var(--ink);transition:transform .4s var(--ease)}
+.burger i:first-child{top:19px}.burger i:last-child{top:26px}
+.menu-open .burger i:first-child{transform:translateY(3.5px) rotate(45deg)}
+.menu-open .burger i:last-child{transform:translateY(-3.5px) rotate(-45deg)}
+.mmenu{position:fixed;inset:0;z-index:90;background:var(--paper);padding:110px var(--gut) var(--gut);display:flex;flex-direction:column;justify-content:space-between;clip-path:inset(0 0 100% 0);transition:clip-path .7s var(--ease)}
+.menu-open .mmenu{clip-path:inset(0)}
+.mmenu a.big{display:flex;align-items:baseline;gap:14px;font-family:var(--serif);font-size:clamp(42px,11vw,72px);line-height:1.1;border-bottom:1px solid var(--line);padding:6px 0}
+.mmenu a.big small{font-family:var(--mono);font-size:12px;color:var(--muted)}
+@media (max-width:900px){.links,.nav .btn{display:none}.burger{display:block}}
+
+/* ---------- reveal ---------- */
+.line-mask{display:block;overflow:hidden;padding-bottom:.08em;margin-bottom:-.08em}
+.line-mask>span{display:inline-block}
+.js .rv{opacity:0;transform:translateY(24px)}
+
+/* ---------- hero ---------- */
+.hero{padding-top:140px;position:relative}
+.hero-top{display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:end}
+.hero h1{font-family:var(--serif);font-size:clamp(52px,8.6vw,148px);letter-spacing:-.02em;line-height:.92}
+.hero h1 em{color:var(--bp)}
+.hero-side p{font-size:clamp(16px,1.3vw,19px);color:var(--ink-2);max-width:440px;margin-bottom:28px}
+.hero-side .cta{display:flex;flex-wrap:wrap;gap:12px}
+.heart{color:var(--red);font-family:var(--serif)}
+.drawing{position:relative;margin-top:56px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);cursor:none;touch-action:pan-y}
+.drawing .hint{position:absolute;top:16px;left:0;right:0;text-align:center;z-index:3}
+.drawing .layer svg{display:block;width:100%;height:auto}
+.drawing .bp{position:absolute;inset:0;background:var(--bp);clip-path:circle(0px at 50% 50%);will-change:clip-path}
+.drawing .bp svg{color:#fff}
+.drawing .ink svg{color:var(--ink)}
+.readout{position:absolute;right:0;bottom:14px;z-index:3;display:flex;gap:18px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--muted);background:var(--paper);padding:4px 0 4px 12px}
+.readout b{font-weight:500;color:var(--ink)}
+@media (max-width:900px){.hero-top{grid-template-columns:1fr}.hero{padding-top:120px}.drawing{cursor:default}.readout{position:static;justify-content:flex-end;font-size:10px;gap:10px;padding:8px 0}}
+@media (hover:none){.drawing{cursor:default}}
+
+svg .s{fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+svg .t{stroke-width:.8}
+svg .d{stroke-dasharray:5 6}
+svg .f{fill:currentColor;stroke:none}
+svg .txt{fill:currentColor;font-family:var(--mono);font-size:13px;letter-spacing:.04em}
+svg .txt.it{font-family:var(--serif);font-style:italic;font-size:22px;letter-spacing:0}
+.ink .bponly{display:none}
+.bp .inkonly{display:none}
+
+/* ---------- marquee ---------- */
+.marquee{overflow:hidden;border-bottom:1px solid var(--line);padding:22px 0;white-space:nowrap}
+.marquee .track{display:inline-flex;gap:56px;font-family:var(--serif);font-size:clamp(28px,3.4vw,48px);will-change:transform}
+.marquee .track span{display:inline-flex;align-items:center;gap:56px}
+.marquee .track span::after{content:"✦";font-size:.45em;color:var(--bp)}
+
+/* ---------- sections ---------- */
+section{position:relative}
+.sec{padding-block:clamp(90px,12vw,170px)}
+.sec-head{display:grid;grid-template-columns:1fr 2fr;gap:40px;margin-bottom:clamp(48px,6vw,90px)}
+.sec-head h2{font-family:var(--serif);font-size:clamp(42px,6vw,96px);letter-spacing:-.015em;line-height:.95}
+.sec-head .intro{font-size:clamp(16px,1.25vw,19px);color:var(--ink-2);max-width:620px;margin-top:28px}
+@media (max-width:900px){.sec-head{grid-template-columns:1fr;gap:18px}}
+
+/* what */
+.svc{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line-2)}
+.svc article{padding:28px 28px 40px 0;border-right:1px solid var(--line);position:relative}
+.svc article+article{padding-left:28px}
+.svc article:last-child{border-right:0}
+.svc .no{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:60px;display:flex;justify-content:space-between}
+.svc .no svg{width:44px;height:44px;color:var(--ink)}
+.svc h3{font-family:var(--serif);font-size:clamp(30px,2.6vw,42px);margin-bottom:12px}
+.svc p{color:var(--ink-2);max-width:280px}
+.svc article::after{content:"";position:absolute;left:0;right:0;top:-1px;height:1px;background:var(--bp);transform:scaleX(0);transform-origin:left;transition:transform .8s var(--ease)}
+.svc article+article::after{left:28px}
+.svc article:hover::after{transform:scaleX(1)}
+.svc article:hover .no svg .s{stroke:var(--bp)}
+@media (max-width:1000px){.svc{grid-template-columns:1fr 1fr}.svc article:nth-child(2){border-right:0}.svc article:nth-child(3){padding-left:0}.svc article:nth-child(3)::after{left:0}.svc article:nth-child(n+3){border-top:1px solid var(--line)}}
+@media (max-width:560px){.svc{grid-template-columns:1fr}.svc article,.svc article+article{padding-left:0;border-right:0}.svc article+article{border-top:1px solid var(--line)}.svc article+article::after{left:0}.svc .no{margin-bottom:28px}}
+
+/* topics skyline */
+.topics{background:var(--paper-2)}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+.filters button{height:38px;padding:0 16px;border:1px solid var(--line-2);border-radius:999px;font-size:13px;display:inline-flex;gap:8px;align-items:center;transition:background .3s,color .3s,border-color .3s}
+.filters button sup{font-family:var(--mono);font-size:10px;color:var(--muted)}
+.filters button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.filters button.on sup{color:rgba(244,243,238,.6)}
+.sky-wrap{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;border-bottom:1px solid var(--ink);-webkit-overflow-scrolling:touch}
+.sky-wrap::-webkit-scrollbar{display:none}
+.sky{display:block;width:100%;min-width:900px;height:auto;color:var(--ink)}
+.sky .obj{cursor:pointer;transition:opacity .5s var(--ease)}
+.sky .obj .hit{fill:transparent}
+.sky .obj .s{transition:stroke .3s}
+.sky .obj.on .s,.sky .obj:hover .s{stroke:var(--bp)}
+.sky .obj.on .hatch{fill:url(#hatchBp)!important}
+.sky .obj.off{opacity:.12;pointer-events:none}
+.sky .num{fill:var(--muted);font-family:var(--mono);font-size:11px}
+.sky .obj.on .num{fill:var(--bp)}
+.swipe{display:none;margin-top:12px}
+@media (max-width:900px){.swipe{display:block}}
+.detail{display:grid;grid-template-columns:1fr 1.25fr;gap:clamp(24px,5vw,80px);margin-top:48px;align-items:start}
+.detail .viz{aspect-ratio:4/3;background:var(--paper);border:1px solid var(--line);position:relative;display:grid;place-items:center;overflow:hidden}
+.detail .viz svg{width:70%;height:auto;color:var(--bp)}
+.detail .viz .grid{position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:24px 24px;opacity:.6}
+.detail .viz .corner{position:absolute;font-family:var(--mono);font-size:10px;color:var(--muted)}
+.detail .meta-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+.tag{display:inline-block;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;border:1px solid var(--line-2);padding:4px 10px;border-radius:99px}
+.detail h3{font-family:var(--serif);font-size:clamp(40px,5vw,76px);line-height:.95;margin:6px 0 18px}
+.detail .formula{font-family:var(--serif);font-style:italic;font-size:clamp(24px,2.4vw,34px);color:var(--bp);margin-bottom:18px}
+.detail p.desc{font-size:18px;color:var(--ink-2);max-width:520px}
+.facts{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line);margin-top:30px}
+.facts div{padding:16px 0;border-bottom:1px solid var(--line)}
+.facts div:nth-child(odd){padding-right:16px}
+.facts dt{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.facts dd{font-size:17px;margin-top:4px}
+.dnav{display:flex;gap:10px;margin-top:28px;align-items:center;flex-wrap:wrap}
+.circ{width:46px;height:46px;border-radius:50%;border:1px solid var(--ink);display:grid;place-items:center;transition:background .3s,color .3s}
+.circ:hover{background:var(--ink);color:var(--paper)}
+.swap-out{animation:sw .55s var(--ease)}
+@keyframes sw{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media (max-width:900px){.detail{grid-template-columns:1fr}}
+
+/* process */
+.proc{display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,6vw,100px)}
+.proc-vis{position:sticky;top:110px;height:fit-content}
+.proc-vis .board{border:1px solid var(--line-2);background:var(--paper);position:relative;aspect-ratio:5/4.2}
+.proc-vis .board svg{width:100%;height:100%;display:block;color:var(--ink)}
+.proc-vis .bar{display:flex;justify-content:space-between;margin-top:14px}
+.proc-vis .ticks{display:flex;gap:6px;margin-top:14px}
+.proc-vis .ticks i{flex:1;height:2px;background:var(--line-2);position:relative;overflow:hidden}
+.proc-vis .ticks i::after{content:"";position:absolute;inset:0;background:var(--bp);transform:scaleX(0);transform-origin:left;transition:transform .7s var(--ease)}
+.proc-vis .ticks i.on::after{transform:scaleX(1)}
+.k .dr{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);transition:stroke-dashoffset 1.2s var(--ease)}
+.k .pop{opacity:0;transition:opacity .6s .3s}
+.k.st1 .g1 .dr,.k.st2 .g1 .dr,.k.st2 .g2 .dr,.k.st3 .g1 .dr,.k.st3 .g2 .dr,.k.st3 .g3 .dr,.k.st4 .dr{stroke-dashoffset:0}
+.k.st1 .g1 .pop,.k.st2 .g1 .pop,.k.st2 .g2 .pop,.k.st3 .g1 .pop,.k.st3 .g2 .pop,.k.st3 .g3 .pop,.k.st4 .pop{opacity:1}
+.k .fillT{fill:var(--bp);opacity:0;transition:opacity .8s}
+.k.st4 .fillT{opacity:.1}
+.k .g4 .s{stroke:var(--bp)}
+.steps li{list-style:none;border-top:1px solid var(--line-2);padding:34px 0 60px;min-height:46vh;display:grid;grid-template-columns:70px 1fr;gap:12px;opacity:.35;transition:opacity .6s}
+.steps li.on{opacity:1}
+.steps .n{font-family:var(--mono);font-size:12px;color:var(--muted);padding-top:12px}
+.steps h3{font-family:var(--serif);font-size:clamp(34px,3.4vw,54px);margin-bottom:14px}
+.steps p{color:var(--ink-2);font-size:18px;max-width:460px}
+.steps .em{display:inline-block;margin-top:18px;font-size:30px}
+.steps .pill{display:inline-block;margin-top:18px;margin-left:12px;vertical-align:middle}
+@media (max-width:900px){.proc{grid-template-columns:1fr}.proc-vis{top:76px;z-index:2;background:var(--paper);padding-bottom:10px}.proc-vis .board{aspect-ratio:5/3}.steps li{min-height:auto;padding-bottom:40px}}
+
+/* about */
+.about{display:grid;grid-template-columns:1fr 1.15fr;gap:clamp(30px,6vw,100px);align-items:start}
+.fig{position:relative}
+.fig .img{overflow:hidden;aspect-ratio:4/5;background:var(--paper-2)}
+.fig img{width:100%;height:118%;object-fit:cover;filter:grayscale(.25) contrast(1.02)}
+.fig figcaption{display:flex;justify-content:space-between;margin-top:12px;font-size:14px}
+.fig figcaption i{font-family:var(--serif);font-size:18px}
+.fig .dim{position:absolute;left:-26px;top:0;bottom:44px;width:14px;border-left:1px solid var(--ink);display:flex;align-items:center}
+.fig .dim::before,.fig .dim::after{content:"";position:absolute;left:-5px;width:9px;height:1px;background:var(--ink)}
+.fig .dim::before{top:0}.fig .dim::after{bottom:0}
+.fig .dim span{writing-mode:vertical-rl;transform:rotate(180deg);font-family:var(--mono);font-size:10px;color:var(--muted);margin-left:-7px;background:var(--paper);padding:6px 0}
+.about h2{font-family:var(--serif);font-size:clamp(40px,5vw,80px);line-height:.98;margin:18px 0 30px}
+.about .body p{font-size:18px;color:var(--ink-2);margin-bottom:18px;max-width:600px}
+.about .body strong{color:var(--ink);font-weight:500;background:linear-gradient(transparent 62%,rgba(29,70,201,.16) 62%)}
+.princ{margin-top:40px;border-top:1px solid var(--line-2)}
+.princ li{list-style:none;display:grid;grid-template-columns:60px 1fr;gap:10px;padding:20px 0;border-bottom:1px solid var(--line)}
+.princ li span{font-family:var(--mono);font-size:12px;color:var(--muted);padding-top:6px}
+.princ h4{font-family:var(--serif);font-weight:400;font-size:28px;line-height:1.1}
+.princ p{color:var(--muted);margin-top:4px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);margin-top:clamp(70px,9vw,130px);border-top:1px solid var(--ink)}
+.stats div{padding:22px 20px 0 0}
+.stats div+div{padding-left:20px;border-left:1px solid var(--line)}
+.stats dt{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.stats dd{font-family:var(--serif);font-size:clamp(64px,8vw,130px);line-height:1;margin-top:10px}
+.stats dd small{font-size:.32em;color:var(--muted);margin-left:6px}
+@media (max-width:900px){.about{grid-template-columns:1fr}.fig{margin-left:26px}.stats{grid-template-columns:1fr 1fr}.stats div:nth-child(3){padding-left:0;border-left:0}.stats div:nth-child(n+3){border-top:1px solid var(--line);margin-top:20px}}
+
+/* quote */
+.quote{background:var(--ink);color:var(--paper);overflow:hidden}
+.quote .wrap{position:relative;z-index:1}
+.quote .label{color:rgba(244,243,238,.55)}
+.quote blockquote{font-family:var(--serif);font-size:clamp(40px,6.4vw,110px);line-height:1;letter-spacing:-.01em;margin:30px 0 40px;max-width:1300px}
+.quote blockquote em{color:#8fa8ff}
+.quote cite{font-style:normal;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:rgba(244,243,238,.6)}
+.quote .bg{position:absolute;right:-6vw;top:50%;transform:translateY(-50%);width:min(760px,80vw);color:rgba(244,243,238,.08);pointer-events:none}
+
+/* success */
+.succ-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2vw,28px)}
+.card{position:relative}
+.card .ph{aspect-ratio:3/4;overflow:hidden;background:var(--paper-2);position:relative}
+.card .ph img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease),filter .6s;filter:grayscale(1)}
+.card:hover .ph img{transform:scale(1.05);filter:grayscale(0)}
+.card .ph .badge{position:absolute;top:14px;right:14px;background:var(--paper);font-family:var(--mono);font-size:11px;padding:6px 10px;border-radius:99px;text-transform:uppercase;letter-spacing:.06em}
+.card .ph .badge b{color:var(--bp);font-weight:500}
+.card h3{font-family:var(--serif);font-size:42px;margin:16px 0 10px;display:flex;justify-content:space-between;align-items:baseline}
+.card h3 span{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.card ul{list-style:none;border-top:1px solid var(--line)}
+.card li{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
+.card li span:first-child{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;padding-top:3px}
+@media (max-width:900px){.succ-grid{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:78%;overflow-x:auto;scroll-snap-type:x mandatory;margin-inline:calc(var(--gut)*-1);padding-inline:var(--gut);scrollbar-width:none}.succ-grid::-webkit-scrollbar{display:none}.card{scroll-snap-align:start}}
+
+/* materials */
+.mat{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--ink)}
+.mat a{position:relative;padding:26px 24px 30px;border-right:1px solid var(--line);overflow:hidden;isolation:isolate;min-height:260px;display:flex;flex-direction:column;justify-content:space-between}
+.mat a:first-child{padding-left:0}
+.mat a:last-child{border-right:0}
+.mat a::before{content:"";position:absolute;inset:0;background:var(--bp);transform:translateY(101%);transition:transform .7s var(--ease);z-index:-1}
+.mat a:hover{color:#fff}
+.mat a:first-child:hover{padding-left:24px}
+.mat a{transition:color .4s,padding .6s var(--ease)}
+.mat a:hover::before{transform:none}
+.mat .g{font-family:var(--serif);font-size:clamp(100px,11vw,180px);line-height:.8}
+.mat .g sup{font-size:.22em;vertical-align:top;margin-left:6px;font-family:var(--mono)}
+.mat .go{display:flex;justify-content:space-between;font-size:14px}
+.mat .go span:last-child{font-family:var(--mono);font-size:11px;opacity:.6;text-transform:uppercase}
+@media (max-width:900px){.mat{grid-template-columns:1fr 1fr}.mat a:nth-child(2){border-right:0}.mat a:nth-child(3){padding-left:0}.mat a:nth-child(n+3){border-top:1px solid var(--line)}.mat a{min-height:190px}}
+
+/* modal */
+.modal{position:fixed;inset:0;z-index:150;display:grid;place-items:center;padding:var(--gut);background:rgba(26,26,24,.5);opacity:0;pointer-events:none;transition:opacity .4s}
+.modal.open{opacity:1;pointer-events:auto}
+.modal .box{background:var(--paper);max-width:560px;width:100%;padding:36px;position:relative;transform:translateY(20px);transition:transform .5s var(--ease)}
+.modal.open .box{transform:none}
+.modal h3{font-family:var(--serif);font-size:56px;margin:10px 0}
+.modal .x{position:absolute;top:16px;right:16px}
+.pdf{display:flex;gap:16px;align-items:center;border:1px dashed var(--line-2);padding:18px;margin-top:24px}
+.pdf b{font-family:var(--mono);font-size:11px;border:1px solid var(--ink);padding:10px 8px}
+
+/* contact */
+.contact{display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,6vw,100px)}
+.contact h2{font-family:var(--serif);font-size:clamp(46px,7vw,120px);line-height:.92;margin:18px 0 28px}
+.contact .lead{font-size:18px;color:var(--ink-2);max-width:480px}
+.ch{margin-top:40px;border-top:1px solid var(--line-2)}
+.ch a{display:flex;justify-content:space-between;align-items:center;padding:18px 0;border-bottom:1px solid var(--line);font-size:clamp(18px,1.6vw,24px);transition:padding .5s var(--ease),color .3s}
+.ch a:hover{padding-left:12px;color:var(--bp)}
+.ch a span:first-child{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;min-width:90px}
+.ch a span:nth-child(2){flex:1}
+form .f{position:relative;border-bottom:1px solid var(--line-2);margin-bottom:8px}
+form label{display:block;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding-top:18px}
+form input,form textarea{width:100%;background:transparent;border:0;outline:0;font:inherit;font-size:20px;padding:10px 0 14px;color:var(--ink);resize:vertical}
+form .f::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:var(--bp);transform:scaleX(0);transform-origin:left;transition:transform .6s var(--ease)}
+form .f:focus-within::after{transform:scaleX(1)}
+form .row{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:30px;flex-wrap:wrap}
+form .note{font-size:13px;color:var(--muted)}
+.sent{font-family:var(--mono);font-size:12px;color:var(--bp);margin-top:14px;min-height:16px}
+@media (max-width:900px){.contact{grid-template-columns:1fr}}
+
+/* cta + footer */
+.cta-big{border-top:1px solid var(--line);text-align:center}
+.cta-big h2{font-family:var(--serif);font-size:clamp(46px,8vw,140px);line-height:.92;max-width:1200px;margin:22px auto 36px}
+footer{background:var(--ink);color:var(--paper);padding-top:80px;overflow:hidden}
+footer .cols{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px}
+footer .label{color:rgba(244,243,238,.5)}
+footer .cols p,footer .cols a{display:block;color:rgba(244,243,238,.85);margin-top:10px}
+footer .cols a:hover{color:#fff}
+footer .brandbig{font-family:var(--serif);font-size:clamp(36px,4vw,60px);line-height:1}
+footer .skyline{margin-top:70px;color:rgba(244,243,238,.75)}
+footer .skyline svg{width:100%;height:auto;display:block}
+footer .bottom{display:flex;justify-content:space-between;gap:20px;padding:20px 0 26px;border-top:1px solid rgba(244,243,238,.15);font-size:13px;color:rgba(244,243,238,.6);flex-wrap:wrap}
+@media (max-width:900px){footer .cols{grid-template-columns:1fr 1fr}footer .cols>div:first-child{grid-column:1/-1}}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.js .rv{opacity:1;transform:none}}
+</style>
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+
+<!-- preloader -->
+<div class="loader" id="loader" aria-hidden="true">
+  <svg viewBox="0 0 220 220">
+    <line class="ax" x1="0" y1="110" x2="220" y2="110"/><line class="ax" x1="110" y1="0" x2="110" y2="220"/>
+    <circle class="c" cx="110" cy="110" r="100" transform="rotate(-90 110 110)"/>
+    <line class="arm" x1="110" y1="110" x2="210" y2="110"/>
+    <circle cx="110" cy="110" r="2.5" fill="#f4f3ee"/>
+  </svg>
+  <div class="loader-txt">
+    <div class="loader-pi" id="piTxt">π = 3.</div>
+    <div class="loader-n"><span id="ldN">0</span><span style="font-size:.4em">%</span></div>
+  </div>
+</div>
+
+<div class="cursor" id="cursor"><div class="h"></div><div class="v"></div><div class="r"></div><div class="t" id="cursorT"></div></div>
+
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a href="#top" class="brand"><b>Matematika sa Tamarom</b><span>Nastavnica matematike</span></a>
+    <nav class="links">
+      <a href="#o-meni">O meni</a><a href="#nacin-rada">Način rada</a><a href="#gradivo">Gradivo</a><a href="#uspeh">Uspeh učenika</a><a href="#materijali">Materijali</a>
+    </nav>
+    <a href="#kontakt" class="btn solid">Pošalji poruku <span class="arr">→</span></a>
+    <button class="burger" id="burger" aria-label="Otvori meni"><i></i><i></i></button>
+  </div>
+</header>
+<div class="mmenu" id="mmenu">
+  <div>
+    <a class="big" href="#o-meni"><small>01</small>O meni</a>
+    <a class="big" href="#nacin-rada"><small>02</small>Način rada</a>
+    <a class="big" href="#gradivo"><small>03</small>Gradivo</a>
+    <a class="big" href="#uspeh"><small>04</small>Uspeh učenika</a>
+    <a class="big" href="#kontakt"><small>05</small>Kontakt</a>
+  </div>
+  <a href="#kontakt" class="btn solid" style="align-self:flex-start">Pošalji poruku <span class="arr">→</span></a>
+</div>
+
+<main id="top">
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-top">
+      <h1 class="split">Gradimo <em>znanje</em>, samopouzdanje i ljubav prema matematici<span class="heart">♡</span></h1>
+      <div class="hero-side rv">
+        <p>Časovi matematike i besplatni materijali za učenike od 5. do 8. razreda. Bez bubanja i bez straha — svaki zadatak se gradi korak po korak, mera po mera.</p>
+        <div class="cta">
+          <a href="#kontakt" class="btn solid">Javi se <span class="arr">→</span></a>
+          <a href="#materijali" class="btn">Besplatni materijali</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="drawing rv" id="drawing">
+      <div class="hint label" id="hint">Pređi kursorom preko crteža da vidiš mere</div>
+      <div class="layer ink" id="inkL"></div>
+      <div class="layer bp" id="bpL"></div>
+      <div class="readout"><span>Detalj A, 1:1</span><span>X <b id="rx">0.0</b> cm</span><span>Y <b id="ry">0.0</b> cm</span></div>
+    </div>
+  </div>
+  <div class="marquee" aria-hidden="true"><div class="track" id="mq"></div></div>
+</section>
+
+<!-- STA RADIM -->
+<section class="sec" id="o-pristupu">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="label rv">Šta gradimo</div>
+      <div>
+        <h2 class="split">Matematika koja ima <em>smisla</em>.</h2>
+        <p class="intro rv">Matematiku približavam na jednostavan, razumljiv i zanimljiv način — da učenik razvije sigurnost u svoje znanje, stekne samopouzdanje i sa radošću prihvata nove izazove.</p>
+      </div>
+    </div>
+    <div class="svc">
+      <article class="rv">
+        <div class="no"><span>01 / 04</span><svg viewBox="0 0 44 44"><path class="s" d="M4 40 H40"/><path class="s" d="M8 40 V30 M16 40 V24 M24 40 V18 M32 40 V10"/></svg></div>
+        <h3>Strpljenje</h3><p>Svaki učenik uči svojim tempom. Nema žurbe — samo sigurni koraci.</p>
+      </article>
+      <article class="rv">
+        <div class="no"><span>02 / 04</span><svg viewBox="0 0 44 44"><circle class="s" cx="22" cy="22" r="16"/><path class="s" d="M22 6 V38 M6 22 H38"/><circle class="s" cx="22" cy="22" r="3"/></svg></div>
+        <h3>Razumevanje</h3><p>Matematika postaje logična i jasna, a postupak razumljiv iz prve ruke.</p>
+      </article>
+      <article class="rv">
+        <div class="no"><span>03 / 04</span><svg viewBox="0 0 44 44"><path class="s" d="M6 38 L22 6 L38 38 Z"/><path class="s" d="M14 22 H30"/></svg></div>
+        <h3>Samopouzdanje</h3><p>Greške postaju deo napretka, a svako pitanje je dobrodošlo.</p>
+      </article>
+      <article class="rv">
+        <div class="no"><span>04 / 04</span><svg viewBox="0 0 44 44"><path class="s" d="M4 36 L16 24 L24 30 L40 10"/><path class="s" d="M30 10 H40 V20"/></svg></div>
+        <h3>Rezultati</h3><p>Bolje ocene dolaze kao posledica znanja — ne obrnuto.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- GRADIVO SKYLINE -->
+<section class="sec topics" id="gradivo">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="label rv">Gradivo</div>
+      <div>
+        <h2 class="split">Horizont <em>geometrije</em> i brojeva.</h2>
+        <p class="intro rv">Svaki oblik na liniji je jedna oblast koju zajedno savladavamo. Pređi preko figure da pročitaš njenu priču, ili filtriraj po razredu i gledaj kako se horizont menja.</p>
+      </div>
+    </div>
+    <div class="filters" id="filters"></div>
+    <div class="sky-wrap"><svg class="sky" id="sky" viewBox="0 0 1200 330"></svg></div>
+    <div class="label swipe">Prevuci duž linije, dodirni figuru</div>
+    <div class="detail" id="detail">
+      <div class="viz"><div class="grid"></div><span class="corner" style="top:10px;left:12px" id="dCorner">SL. 01</span><span class="corner" style="bottom:10px;right:12px">M 1:1</span><svg id="dViz" viewBox="0 0 200 200"></svg></div>
+      <div>
+        <div class="meta-top"><span class="mono" id="dNo">Br. 01 / 09</span><span class="tag" id="dTag">5. razred</span></div>
+        <div id="dBody">
+          <h3 id="dTitle">Razlomci</h3>
+          <div class="formula" id="dF">a / b</div>
+          <p class="desc" id="dDesc"></p>
+          <dl class="facts">
+            <div><dt>Oblast</dt><dd id="dArea">Aritmetika</dd></div>
+            <div><dt>Materijali</dt><dd>Stižu uskoro</dd></div>
+          </dl>
+        </div>
+        <div class="dnav">
+          <button class="circ" id="dPrev" aria-label="Prethodna oblast">←</button>
+          <button class="circ" id="dNext" aria-label="Sledeća oblast">→</button>
+          <a href="#kontakt" class="btn" style="margin-left:auto">Pitaj za ovu oblast <span class="arr">→</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NACIN RADA -->
+<section class="sec" id="nacin-rada">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="label rv">Način rada</div>
+      <div><h2 class="split">Od nesigurnosti do <em>samostalnog</em> rešavanja.</h2></div>
+    </div>
+    <div class="proc">
+      <div class="proc-vis">
+        <div class="board">
+          <svg viewBox="0 0 500 420" class="k" id="kon">
+            <defs><pattern id="gridP" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0 H0 V20" fill="none" stroke="rgba(26,26,24,.07)"/></pattern></defs>
+            <rect width="500" height="420" fill="url(#gridP)"/>
+            <text class="txt" x="18" y="28">KONSTRUKCIJA Δ ABC, 1:1</text>
+            <text class="txt" x="482" y="28" text-anchor="end" id="kStage">KORAK 01 / 04</text>
+            <g class="g1">
+              <path class="s dr" style="--len:340" d="M80 330 H420"/>
+              <g class="pop"><circle class="f" cx="80" cy="330" r="3.5"/><circle class="f" cx="420" cy="330" r="3.5"/>
+              <text class="txt it" x="62" y="358">A</text><text class="txt it" x="426" y="358">B</text>
+              <text class="txt" x="250" y="378" text-anchor="middle">c = 6 cm</text></g>
+            </g>
+            <g class="g2">
+              <path class="s t d dr" style="--len:500" d="M 339.5 330 A 260 260 0 0 0 157 82"/>
+              <path class="s t d dr" style="--len:420" d="M 200 330 A 220 220 0 0 1 360 118.3"/>
+              <g class="pop"><text class="txt" x="120" y="300">r = b</text><text class="txt" x="350" y="300">r = a</text></g>
+            </g>
+            <g class="g3">
+              <g class="pop"><circle class="f" cx="278.2" cy="161.8" r="4"/><circle class="s" cx="278.2" cy="161.8" r="10"/><text class="txt it" x="286" y="148">C</text></g>
+            </g>
+            <g class="g4">
+              <path class="fillT" d="M80 330 L420 330 L278.2 161.8 Z"/>
+              <path class="s dr" style="--len:270" d="M80 330 L278.2 161.8"/>
+              <path class="s dr" style="--len:225" d="M420 330 L278.2 161.8"/>
+              <g class="pop">
+                <path class="s t" d="M120 330 A40 40 0 0 0 110.5 304.1"/>
+                <path class="s t" d="M385 330 A35 35 0 0 1 397.4 303.2"/>
+                <text class="txt it" x="126" y="322" style="font-size:18px">α</text><text class="txt it" x="362" y="322" style="font-size:18px">β</text>
+                <text class="txt" x="150" y="240">b</text><text class="txt" x="356" y="240">a</text>
+                <text class="txt" x="250" y="400" text-anchor="middle" style="fill:var(--bp)">α + β + γ = 180°</text>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <div class="ticks" id="kTicks"><i></i><i></i><i></i><i></i></div>
+        <div class="bar"><span class="mono" id="kName">Razumevanje, ne bubanje</span><span class="mono" style="color:var(--muted)">Korak po korak</span></div>
+      </div>
+      <ol class="steps" id="steps">
+        <li data-s="1"><span class="n">01</span><div><h3>Razumevanje, ne bubanje</h3><p>Učenik uči logiku postupka i primenjuje znanje na novim zadacima. Prvo crtamo osnovu — kao duž AB — pa tek onda gradimo dalje.</p><span class="em">🧠</span><span class="tag pill">Temelj</span></div></li>
+        <li data-s="2"><span class="n">02</span><div><h3>Ciljana priprema</h3><p>Vežbamo tačno ono što je potrebno za kontrolni, pismeni ili ispit. Kao šestar: precizno, sa merom, bez lutanja.</p><span class="em">🎯</span><span class="tag pill">Kontrolni · Pismeni · Ispit</span></div></li>
+        <li data-s="3"><span class="n">03</span><div><h3>Vidljiv napredak</h3><p>Gradivo se gradi postepeno, uz redovnu proveru razumevanja. Svaka nova tačka stoji na onome što je već sigurno nacrtano.</p><span class="em">📈</span><span class="tag pill">Redovna provera</span></div></li>
+        <li data-s="4"><span class="n">04</span><div><h3>Prijatna atmosfera</h3><p>Greške koristimo kao deo procesa učenja, bez pritiska i straha. Na kraju — figura je zatvorena, a zadatak rešen samostalno.</p><span class="em">❤</span><span class="tag pill">Bez pritiska</span></div></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- O MENI -->
+<section class="sec" id="o-meni" style="border-top:1px solid var(--line)">
+  <div class="wrap">
+    <div class="about">
+      <figure class="fig rv">
+        <div class="dim"><span>h = 1 nastavnica · ∞ strpljenja</span></div>
+        <div class="img"><img src="https://tamarabrankovic.com/assets/tamara.jpg" alt="Tamara, nastavnica matematike" loading="lazy" data-par></div>
+        <figcaption><i>Sl. 01 — Tamara</i><span class="mono" style="color:var(--muted)">Nastavnica matematike</span></figcaption>
+      </figure>
+      <div>
+        <div class="label rv">O meni</div>
+        <h2 class="split">Zdravo, ja sam <em>Tamara</em>.</h2>
+        <div class="body rv">
+          <p>Ljubav prema matematici rodila se još tokom mog školovanja, a danas imam privilegiju da tu ljubav prenosim svojim učenicima.</p>
+          <p>U radu sa decom najvažniji su mi poverenje, strpljenje i međusobno poštovanje. Verujem da je <strong>svaki učenik jedinstven</strong> i da uz podršku, razumevanje i pravi pristup može da ostvari svoj puni potencijal.</p>
+          <p>Zato mi je cilj da svaki čas bude mesto na kome se <strong>znanje gradi korak po korak</strong>, u prijatnoj atmosferi u kojoj je svako pitanje dobrodošlo, a greške predstavljaju <strong>priliku za učenje i napredak.</strong></p>
+        </div>
+        <ul class="princ">
+          <li class="rv"><span>01</span><div><h4>Poverenje</h4><p>Učenik zna da sme da pita sve — i da će dobiti odgovor.</p></div></li>
+          <li class="rv"><span>02</span><div><h4>Strpljenje</h4><p>Isti zadatak objasnimo i pet puta, dok ne „klikne”.</p></div></li>
+          <li class="rv"><span>03</span><div><h4>Poštovanje</h4><p>Svako napreduje svojim tempom, i svaki korak se računa.</p></div></li>
+        </ul>
+      </div>
+    </div>
+    <dl class="stats">
+      <div class="rv"><dt>Razredi</dt><dd><span class="cnt" data-to="4">0</span><small>5.–8.</small></dd></div>
+      <div class="rv"><dt>Upisane na budžet</dt><dd><span class="cnt" data-to="3">0</span><small>FTN</small></dd></div>
+      <div class="rv"><dt>Cena materijala</dt><dd><span class="cnt" data-to="0">0</span><small>RSD</small></dd></div>
+      <div class="rv"><dt>Glupih pitanja</dt><dd><span class="cnt" data-to="0">0</span><small>nikad</small></dd></div>
+    </dl>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section class="sec quote">
+  <svg class="bg" viewBox="0 0 400 400" aria-hidden="true"><g class="s" style="stroke-width:1"><circle cx="200" cy="200" r="180"/><circle cx="200" cy="200" r="120"/><path d="M20 200 H380 M200 20 V380 M73 73 L327 327 M327 73 L73 327"/><path d="M200 20 L356 290 L44 290 Z"/></g></svg>
+  <div class="wrap">
+    <div class="label rv">Misao</div>
+    <blockquote class="split">Obrazovanje nije učenje činjenica, već <em>vežbanje uma</em> da razmišlja.</blockquote>
+    <cite class="rv">— Albert Ajnštajn</cite>
+  </div>
+</section>
+
+<!-- USPEH -->
+<section class="sec" id="uspeh">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="label rv">Uspeh učenika</div>
+      <div>
+        <h2 class="split">Zajedno do <em>ostvarenih</em> ciljeva.</h2>
+        <p class="intro rv">Ponosna sam na svakog učenika koji je svojim radom, trudom i upornošću ostvario željeni cilj. Svaki uspeh počinje verom u sebe i kvalitetnim zajedničkim radom.</p>
+      </div>
+    </div>
+    <div class="succ-grid">
+      <article class="card rv"><div class="ph"><img src="https://tamarabrankovic.com/assets/mina.jpeg" alt="Mina" loading="lazy"><span class="badge">✓ <b>Budžet</b></span></div>
+        <h3>Mina <span>01 / 03</span></h3><ul><li><span>Fakultet</span><span>Fakultet tehničkih nauka</span></li><li><span>Grad</span><span>Novi Sad</span></li></ul></article>
+      <article class="card rv"><div class="ph"><img src="https://tamarabrankovic.com/assets/tamara-rakanovic.jpeg" alt="Tamara" loading="lazy"><span class="badge">✓ <b>Budžet</b></span></div>
+        <h3>Tamara <span>02 / 03</span></h3><ul><li><span>Fakultet</span><span>Fakultet tehničkih nauka</span></li><li><span>Grad</span><span>Novi Sad</span></li></ul></article>
+      <article class="card rv"><div class="ph"><img src="https://tamarabrankovic.com/assets/milica.jpeg" alt="Milica" loading="lazy"><span class="badge">✓ <b>Budžet</b></span></div>
+        <h3>Milica <span>03 / 03</span></h3><ul><li><span>Fakultet</span><span>Fakultet tehničkih nauka</span></li><li><span>Grad</span><span>Novi Sad</span></li></ul></article>
+    </div>
+  </div>
+</section>
+
+<!-- MATERIJALI -->
+<section class="sec topics" id="materijali">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="label rv">Besplatni materijali</div>
+      <div>
+        <h2 class="split">Odaberi razred i <em>vežbaj</em>.</h2>
+        <p class="intro rv">Materijali su namenjeni učenicima koji žele da vežbaju, ponove gradivo ili se dodatno pripreme za kontrolne zadatke i pismene provere.</p>
+      </div>
+    </div>
+    <div class="mat">
+      <a href="#" data-g="5" class="rv"><span class="g">5<sup>razred</sup></span><span class="go"><span>Pogledaj materijale →</span><span>PDF</span></span></a>
+      <a href="#" data-g="6" class="rv"><span class="g">6<sup>razred</sup></span><span class="go"><span>Pogledaj materijale →</span><span>PDF</span></span></a>
+      <a href="#" data-g="7" class="rv"><span class="g">7<sup>razred</sup></span><span class="go"><span>Pogledaj materijale →</span><span>PDF</span></span></a>
+      <a href="#" data-g="8" class="rv"><span class="g">8<sup>razred</sup></span><span class="go"><span>Pogledaj materijale →</span><span>PDF</span></span></a>
+    </div>
+  </div>
+</section>
+
+<!-- KONTAKT -->
+<section class="sec" id="kontakt">
+  <div class="wrap contact">
+    <div>
+      <div class="label rv">Kontakt</div>
+      <h2 class="split">Zajedno do <em>pravog</em> rešenja.</h2>
+      <p class="lead rv">Ukoliko imate pitanja u vezi sa časovima, gradivom ili načinom rada, slobodno mi se obratite. Biće mi zadovoljstvo da odgovorim na Vašu poruku u najkraćem mogućem roku.</p>
+      <div class="ch rv">
+        <a href="mailto:kontakt@tamarabrankovic.com"><span>Email</span><span>kontakt@tamarabrankovic.com</span><span>↗</span></a>
+        <a href="tel:+381656706248"><span>Telefon</span><span>+381 65 67 06 248</span><span>↗</span></a>
+      </div>
+    </div>
+    <form id="form" class="rv" novalidate>
+      <div class="f"><label for="fn">Ime i prezime</label><input id="fn" name="ime" required autocomplete="name"></div>
+      <div class="f"><label for="fc">Email ili telefon</label><input id="fc" name="kontakt" required></div>
+      <div class="f"><label for="fm">Poruka</label><textarea id="fm" name="poruka" rows="4" required></textarea></div>
+      <div class="row"><span class="note">Odgovor možete očekivati u najkraćem mogućem roku.</span><button class="btn solid" type="submit">Pošalji poruku <span class="arr">→</span></button></div>
+      <div class="sent" id="sent"></div>
+    </form>
+  </div>
+</section>
+
+<section class="sec cta-big">
+  <div class="wrap">
+    <div class="label rv">Prvi korak</div>
+    <h2 class="split">Imaš zadatak, kontrolni ili pitanje na <em>papiriću</em>?</h2>
+    <a href="#kontakt" class="btn solid rv">Pošalji ga <span class="arr">→</span></a>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div><div class="brandbig">Matematika sa Tamarom<span class="heart"> ♡</span></div><p style="max-width:380px">Mesto gde zajedno gradimo znanje, samopouzdanje i ljubav prema matematici.</p></div>
+      <div><div class="label">Istraži</div><a href="#o-meni">O meni</a><a href="#nacin-rada">Način rada</a><a href="#gradivo">Gradivo</a><a href="#uspeh">Uspeh učenika</a><a href="#materijali">Materijali</a></div>
+      <div><div class="label">Kontakt</div><a href="mailto:kontakt@tamarabrankovic.com">kontakt@tamarabrankovic.com</a><a href="tel:+381656706248">+381 65 67 06 248</a></div>
+    </div>
+    <div class="skyline"><svg id="fSky" viewBox="0 0 1200 220"></svg></div>
+    <div class="bottom"><span>© 2026 tamarabrankovic.com — Sva prava zadržana.</span><span>Nacrtano šestarom i lenjirom.</span><a href="#top">Nazad na vrh ↑</a></div>
+  </div>
+</footer>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mT">
+  <div class="box">
+    <button class="circ x" id="mX" aria-label="Zatvori">×</button>
+    <div class="label">Materijali</div>
+    <h3 id="mT">5. razred</h3>
+    <p style="color:var(--ink-2)">PDF materijali za izabrani razred.</p>
+    <div class="pdf"><b>PDF</b><div><strong style="font-weight:500">Materijali stižu uskoro</strong><div style="font-size:14px;color:var(--muted)">U međuvremenu, piši mi ako ti treba nešto konkretno.</div></div></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="main.js"></script>
+</body>
+</html>
