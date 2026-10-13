@@ -21,6 +21,7 @@
     const bp = mode === 'bp';
     const o = [];
     const T = (x, y, s, cls = 'txt it', extra = '') => o.push(`<text class="${cls}" x="${x}" y="${y}" ${extra}>${s}</text>`);
+    const P = (d, cls = 's', extra = '') => o.push(`<path class="${cls}" d="${d}" ${extra}/>`);
     o.push(`<svg viewBox="0 0 1200 620" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">`);
     o.push(`<defs>
       <pattern id="h-${mode}" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="8" stroke="currentColor" stroke-width="1" opacity=".45"/></pattern>
@@ -28,90 +29,94 @@
     </defs>`);
     if (bp) {
       o.push(`<rect width="1200" height="620" fill="url(#g-${mode})"/>`);
-      T(1140, 36, 'TABLA 01 — FUNKCIJE · JEDNAČINE · MERE', 'txt', 'text-anchor="end" style="font-size:11px"');
+      T(1140, 36, 'TABLA 01 — FUNKCIJE · JEDNAČINE · GEOMETRIJA · MERE', 'txt', 'text-anchor="end" style="font-size:11px"');
     }
 
-    /* --- koordinatni sistem --- */
+    /* --- koordinatni sistem + funkcije --- */
     if (bp) for (let x = -3; x <= 5; x++) for (let y = -5; y <= 5; y++) o.push(`<circle cx="${GX(x)}" cy="${GY(y)}" r="1.2" class="f" opacity=".5"/>`);
-    o.push(`<path class="s t" d="M${GX(-3.2)} 330 H${GX(5.3)} M${GX(5.3) - 8} 325 L${GX(5.3)} 330 L${GX(5.3) - 8} 335"/>`);
-    o.push(`<path class="s t" d="M230 ${GY(-5.3)} V${GY(5.6)} M225 ${GY(5.6) + 8} L230 ${GY(5.6)} L235 ${GY(5.6) + 8}"/>`);
-    for (let x = -3; x <= 5; x++) if (x) {
-      o.push(`<path class="s t" d="M${GX(x)} 326 V334"/>`);
-      T(GX(x), 348, neg(x), 'txt', 'text-anchor="middle" style="font-size:10px"');
-    }
-    for (let y = -5; y <= 5; y++) if (y) {
-      o.push(`<path class="s t" d="M226 ${GY(y)} H234"/>`);
-      T(220, GY(y) + 4, neg(y), 'txt', 'text-anchor="end" style="font-size:10px"');
-    }
+    P(`M${GX(-3.2)} 330 H${GX(5.3)} M${GX(5.3) - 8} 325 L${GX(5.3)} 330 L${GX(5.3) - 8} 335`, 's t');
+    P(`M230 ${GY(-5.3)} V${GY(5.6)} M225 ${GY(5.6) + 8} L230 ${GY(5.6)} L235 ${GY(5.6) + 8}`, 's t');
+    for (let x = -3; x <= 5; x++) if (x) { P(`M${GX(x)} 326 V334`, 's t'); T(GX(x), 348, neg(x), 'txt', 'text-anchor="middle" style="font-size:10px"'); }
+    for (let y = -5; y <= 5; y++) if (y) { P(`M226 ${GY(y)} H234`, 's t'); T(220, GY(y) + 4, neg(y), 'txt', 'text-anchor="end" style="font-size:10px"'); }
     T(GX(5.3) + 6, 350, 'x'); T(240, GY(5.6) + 6, 'y'); T(214, 348, '0', 'txt', 'text-anchor="end" style="font-size:10px"');
-    // parabola
     let d = '';
     for (let x = -1.7; x <= 3.71; x += 0.05) d += (d ? ' L' : 'M') + GX(x).toFixed(1) + ' ' + GY(f(x)).toFixed(1);
-    o.push(`<path class="s" d="${d}" style="stroke-width:1.8"/>`);
-    // prava
-    o.push(`<path class="s" d="M${GX(-0.9)} ${GY(-4.8)} L${GX(4.2)} ${GY(5.4)}"/>`);
+    P(d, 's', 'style="stroke-width:1.8"');
+    P(`M${GX(-0.9)} ${GY(-4.8)} L${GX(4.2)} ${GY(5.4)}`);
     T(36, 410, 'f(x) = x² − 2x − 3', 'txt it', 'style="font-size:18px"');
-    T(404, 186, 'g(x) = 2x − 3', 'txt it', 'style="font-size:19px"');
+    T(382, 128, 'g(x) = 2x − 3', 'txt it', 'text-anchor="end" style="font-size:18px"');
     [[-1, 0], [3, 0], [1, -4], [0, -3], [4, 5]].forEach(([x, y]) => o.push(`<circle class="f" cx="${GX(x)}" cy="${GY(y)}" r="3.2"/>`));
 
-    /* --- izvođenje (srednja kolona) --- */
-    T(540, 150, 'x² − 2x − 3 = 0', 'txt it', 'style="font-size:26px"');
-    T(540, 200, 'D = b² − 4ac', 'txt it', 'style="font-size:24px"');
-    T(540, 245, 'D = (−2)² − 4 · 1 · (−3) = 16', 'txt it', 'style="font-size:24px"');
-    T(540, 323, 'x₁,₂ =', 'txt it', 'style="font-size:24px"');
-    T(700, 304, '2 ± √16', 'txt it', 'text-anchor="middle" style="font-size:24px"');
-    o.push(`<path class="s" d="M640 314 H760"/>`);
-    T(700, 342, '2', 'txt it', 'text-anchor="middle" style="font-size:24px"');
-    T(548, 403, 'x₁ = 3,   x₂ = −1', 'txt it', 'style="font-size:26px"');
-    o.push(`<path class="s" d="M530 372 H752 V416 H530 Z"/><path class="s t" d="M526 368 H756 V420 H526 Z"/>`);
+    /* --- izvođenje kvadratne jednačine --- */
+    T(470, 140, 'x² − 2x − 3 = 0', 'txt it', 'style="font-size:25px"');
+    T(470, 188, 'D = b² − 4ac', 'txt it', 'style="font-size:22px"');
+    T(470, 232, 'D = (−2)² − 4 · 1 · (−3) = 16', 'txt it', 'style="font-size:22px"');
+    T(470, 310, 'x₁,₂ =', 'txt it', 'style="font-size:22px"');
+    T(612, 292, '2 ± √16', 'txt it', 'text-anchor="middle" style="font-size:22px"');
+    P('M560 301 H664');
+    T(612, 328, '2', 'txt it', 'text-anchor="middle" style="font-size:22px"');
+    T(478, 392, 'x₁ = 3,   x₂ = −1', 'txt it', 'style="font-size:24px"');
+    P('M462 362 H688 V406 H462 Z'); P('M458 358 H692 V410 H458 Z', 's t');
 
-    /* --- (a + b)² --- */
-    o.push(`<path class="s" d="M880 100 H1035 V255 H880 Z M980 100 V255 M880 200 H1035"/>`);
-    o.push(`<path class="s" d="M880 100 H980 V200 H880 Z" style="fill:url(#h-${mode})"/>`);
-    T(930, 90, 'a', 'txt it', 'text-anchor="middle" style="font-size:18px"'); T(1007, 90, 'b', 'txt it', 'text-anchor="middle" style="font-size:18px"');
-    T(866, 156, 'a', 'txt it', 'text-anchor="end" style="font-size:18px"'); T(866, 233, 'b', 'txt it', 'text-anchor="end" style="font-size:18px"');
-    T(1084, 150, 'π', 'txt it', 'style="font-size:56px"');
+    /* --- krug sa upisanim trouglom --- */
+    const cx = 905, cy = 210, r = 85;
+    const A = [cx, cy - r], B = [cx + 73.6, cy + 42.5], C = [cx - 73.6, cy + 42.5];
+    o.push(`<circle class="s" cx="${cx}" cy="${cy}" r="${r}"/>`);
+    P(`M${A} L${B} L${C} Z`);
+    P(`M${cx} ${cy} L${cx + r} ${cy}`, 's t d'); P(`M${A} L${cx} ${cy + 42.5}`, 's t d');
+    o.push(`<circle class="f" cx="${cx}" cy="${cy}" r="2.5"/>`);
+    [A, B, C].forEach(p => { o.push(`<circle class="f" cx="${p[0]}" cy="${p[1]}" r="2.5"/>`); P(`M${p[0] - 12} ${p[1] - 7} Q ${p[0]} ${p[1] - 15} ${p[0] + 12} ${p[1] - 7}`, 's t'); });
 
-    /* --- Gausova suma i brojevna prava --- */
-    T(870, 350, '1 + 2 + … + n = n(n + 1) / 2', 'txt it', 'style="font-size:20px"');
-    o.push(`<path class="s" d="M860 440 H1146 M1138 435 L1146 440 L1138 445"/>`);
-    const NL = [['−1', 885], ['−½', 935], ['0', 985], ['½', 1035], ['1', 1085]];
-    NL.forEach(([l, x]) => { o.push(`<path class="s t" d="M${x} 433 V447"/>`); T(x, 466, l, 'txt it', 'text-anchor="middle" style="font-size:17px"'); });
-    o.push(`<path class="s t" d="M985 432 Q1010 404 1035 432 M1035 432 Q1060 404 1085 432 M1085 432 Q1110 404 1135 432"/><circle class="f" cx="1135" cy="440" r="3"/>`);
-    [1010, 1060, 1110].forEach(x => T(x, 404, '+½', 'txt it', 'text-anchor="middle" style="font-size:14px"'));
+    /* --- kocka --- */
+    P('M1025 150 H1105 V230 H1025 Z M1025 150 L1055 125 H1135 V205 L1105 230 M1105 150 L1135 125');
+    P('M1055 125 V205 H1135 M1055 205 L1025 230', 's t d');
+
+    /* --- uglomer --- */
+    const pc = [985, 540], pr = 125, rad = a => a * Math.PI / 180;
+    P(`M${pc[0] - pr} 540 A${pr} ${pr} 0 0 1 ${pc[0] + pr} 540 Z`);
+    P(`M${pc[0] - 90} 540 A90 90 0 0 1 ${pc[0] + 90} 540`, 's t');
+    for (let a = 0; a <= 180; a += 5) {
+      const L = a % 10 === 0 ? (a % 30 === 0 ? 16 : 10) : 5;
+      P(`M${(pc[0] + pr * Math.cos(rad(a))).toFixed(1)} ${(540 - pr * Math.sin(rad(a))).toFixed(1)} L${(pc[0] + (pr - L) * Math.cos(rad(a))).toFixed(1)} ${(540 - (pr - L) * Math.sin(rad(a))).toFixed(1)}`, 's t');
+      if (a % 30 === 0) T((pc[0] + 100 * Math.cos(rad(a))).toFixed(1), (540 - 100 * Math.sin(rad(a)) + 4).toFixed(1), a, 'txt', 'text-anchor="middle" style="font-size:9px"');
+    }
+    P(`M985 540 L${(985 + 155 * Math.cos(rad(50))).toFixed(1)} ${(540 - 155 * Math.sin(rad(50))).toFixed(1)}`);
+    P('M985 540 L1140 540');
+    P(`M1025 540 A40 40 0 0 0 ${(985 + 40 * Math.cos(rad(50))).toFixed(1)} ${(540 - 40 * Math.sin(rad(50))).toFixed(1)}`, 's t');
+    o.push('<circle class="f" cx="985" cy="540" r="3"/>');
 
     /* --- lenjir --- */
     o.push(`<rect class="s" x="60" y="560" width="1080" height="34" rx="2"/>`);
     for (let x = 60, i = 0; x <= 1140; x += 15, i++) {
-      o.push(`<path class="s t" d="M${x} 560 V${560 + (i % 2 === 0 ? 14 : 7)}"/>`);
-      if (i % 4 === 0) T(x, 588, i / 2, 'txt', 'text-anchor="middle" style="font-size:10px"');
+      P(`M${x} 560 V${560 + (i % 2 === 0 ? 14 : 7)}`, 's t');
+      if (i % 4 === 0 && x < 1120) T(x, 588, i / 2, 'txt', 'text-anchor="middle" style="font-size:10px"');
     }
     T(1132, 588, 'cm', 'txt', 'text-anchor="end" style="font-size:10px"');
 
     if (!bp) {
-      T(930, 157, 'a²', 'txt it', 'text-anchor="middle"'); T(1007, 157, 'ab', 'txt it', 'text-anchor="middle"');
-      T(930, 234, 'ab', 'txt it', 'text-anchor="middle"'); T(1007, 234, 'b²', 'txt it', 'text-anchor="middle"');
-      o.push(`<path class="s t" d="M420 120 l10 10 m0 -10 l-10 10"/>`);
+      T(A[0] - 6, A[1] - 20, 'C', 'txt it', 'style="font-size:20px"'); T(B[0] + 8, B[1] + 18, 'B', 'txt it', 'style="font-size:20px"'); T(C[0] - 22, C[1] + 18, 'A', 'txt it', 'style="font-size:20px"');
+      T(cx + 6, cy - 6, 'O', 'txt it', 'style="font-size:18px"');
+      T(1060, 200, 'V', 'txt it', 'style="font-size:20px"');
+      T(1030, 528, 'α', 'txt it', 'style="font-size:20px"');
+      T(780, 330, 'π', 'txt it', 'style="font-size:52px"');
     } else {
-      // rešenja na grafiku
       [[-1, 0], [3, 0], [1, -4], [0, -3], [4, 5]].forEach(([x, y]) => o.push(`<circle class="s" cx="${GX(x)}" cy="${GY(y)}" r="7"/>`));
-      o.push(`<path class="s t d" d="M${GX(1)} 330 V${GY(-4)} M230 ${GY(-4)} H${GX(1)}"/>`);
+      P(`M${GX(1)} 330 V${GY(-4)} M230 ${GY(-4)} H${GX(1)}`, 's t d');
       T(GX(1) + 10, GY(-4) + 18, 'T(1, −4)', 'txt'); T(GX(-1) - 6, 318, 'x₁ = −1', 'txt', 'text-anchor="end"');
       T(GX(3) + 8, 318, 'x₂ = 3', 'txt'); T(238, GY(-3) + 5, 'A(0, −3)', 'txt'); T(GX(4) + 10, GY(5) + 4, 'B(4, 5)', 'txt');
       T(36, 432, 'nule: f(x) = 0', 'txt');
-      // beleške uz izvođenje
-      T(540, 118, 'a = 1   b = −2   c = −3', 'txt');
-      T(540, 272, 'D > 0 ⇒ dva realna rešenja', 'txt');
-      T(780, 330, '= 1 ± 2', 'txt it', 'style="font-size:22px"');
-      T(540, 446, 'provera: 3² − 2·3 − 3 = 0 ✓', 'txt');
-      T(540, 466, 'Vijet: x₁ + x₂ = 2, x₁ · x₂ = −3', 'txt');
-      // (a + b)² beleške
-      T(930, 157, 'a² = 1', 'txt', 'text-anchor="middle"'); T(1007, 157, 'ab', 'txt', 'text-anchor="middle"');
-      T(930, 234, 'ab', 'txt', 'text-anchor="middle"'); T(1007, 234, 'b²', 'txt', 'text-anchor="middle"');
-      T(880, 285, '(a + b)² = a² + 2ab + b²', 'txt');
-      T(1058, 178, '≈ 3,14159 26535', 'txt', 'style="font-size:10px"');
-      T(870, 374, 'n = 100 ⇒ 5050  (Gaus, 9 god.)', 'txt');
-      T(870, 498, '½ + ½ + ½ = 3/2 = 1,5', 'txt'); T(870, 518, '0,5 = 50% = ½', 'txt');
+      T(470, 110, 'a = 1   b = −2   c = −3', 'txt');
+      T(470, 262, 'D > 0 ⇒ dva realna rešenja', 'txt');
+      T(676, 316, '= 1 ± 2', 'txt it', 'style="font-size:20px"');
+      T(470, 436, 'provera: 3² − 2·3 − 3 = 0 ✓', 'txt');
+      T(470, 456, 'Vijet: x₁ + x₂ = 2, x₁ · x₂ = −3', 'txt');
+      T(cx + 10, cy - 8, 'r = 5 cm', 'txt');
+      T(cx, cy + 66, 'a = r√3 ≈ 8,66 cm', 'txt', 'text-anchor="middle"');
+      T(820, 324, 'O = 2rπ ≈ 31,4 cm', 'txt'); T(820, 344, 'P = r²π ≈ 78,5 cm²', 'txt');
+      P('M1025 244 H1105 M1025 238 V250 M1105 238 V250', 's t'); T(1065, 262, 'a = 4 cm', 'txt', 'text-anchor="middle"');
+      T(1025, 284, 'V = a³ = 64 cm³', 'txt'); T(1025, 302, 'P = 6a² = 96 cm²', 'txt');
+      T(1032, 525, 'α = 50°', 'txt');
+      T(770, 360, 'π ≈ 3,14159', 'txt', 'style="font-size:10px"');
     }
     o.push('</svg>');
     return o.join('');
@@ -142,7 +147,7 @@
   })();
 
   /* ================= MARQUEE ================= */
-  const row1 = ['a² + b² = c²', 'x₁,₂ = (−b ± √D) / 2a', '(a + b)² = a² + 2ab + b²', 'y = kx + n', 'aᵐ · aⁿ = aᵐ⁺ⁿ', '½ + ⅓ = ⅚', 'sin²α + cos²α = 1', 'P = r²π', 'a² − b² = (a − b)(a + b)', 'Sₙ = n(a₁ + aₙ) / 2', 'logₐ(xy) = logₐx + logₐy'];
+  const row1 = ['a² + b² = c²', 'O = 2rπ', 'x₁,₂ = (−b ± √D) / 2a', 'α + β + γ = 180°', '(a + b)² = a² + 2ab + b²', 'V = a³', 'y = kx + n', 'P = a · h / 2', 'aᵐ · aⁿ = aᵐ⁺ⁿ', 'P = r²π', '½ + ⅓ = ⅚', 'V = B · H', 'sin²α + cos²α = 1', 'a² − b² = (a − b)(a + b)'];
   const row2 = ['π = 3,14159 26535 89793', '√2 = 1,41421 35623', 'e = 2,71828 18284', 'φ = 1,61803 39887', '1 + 2 + … + 100 = 5050', '0,999… = 1', '2¹⁰ = 1024', '12² = 144', '0! = 1', '111 111 111² = 12345678987654321'];
   const mq = $('#mq'), mq2 = $('#mq2');
   const r1 = row1.map(t => `<span>${t}</span>`).join(''), r2 = row2.map(t => `<span>${t}</span>`).join('');
@@ -150,56 +155,61 @@
 
   /* ================= GRADIVO / HORIZONT ================= */
   const topics = [
-    { n: 'Razlomci', g: 5, area: 'Aritmetika', f: `${F('a', 'b')} + ${F('c', 'd')} = ${F('ad + bc', 'bd')}`, d: 'Deo celine koji se može nacrtati, preseći i sabrati. Proširivanje, skraćivanje, sabiranje i množenje — razlomak prvo vidimo, pa tek onda računamo.', ex: [`${F(1, 2)} + ${F(1, 3)}`, `${F(3, 6)} + ${F(2, 6)}`, `${F(5, 6)}`] },
-    { n: 'Celi brojevi', g: 6, area: 'Aritmetika', f: '(−a) · (−b) = a · b', d: 'Brojevna prava levo od nule: suprotni brojevi, apsolutna vrednost i pravila znaka koja se razumeju, a ne napamet uče.', ex: ['(−3) · (−4) = 12', '−3 − (−4) = −3 + 4', '= 1'] },
-    { n: 'Procenti i proporcije', g: 6, area: 'Aritmetika', f: `p% od a = a · ${F('p', '100')}`, d: 'Popusti, kamate, razmere na mapi i recepti. Proporcija je „unakrsno množenje” koje ima smisla.', ex: [`20% od 350 = 350 · ${F(20, 100)}`, '= 70', '3 : x = 6 : 8 ⇒ x = 4'] },
-    { n: 'Stepeni', g: 7, area: 'Algebra', f: 'a<sup>m</sup> · a<sup>n</sup> = a<sup>m + n</sup>', d: 'Množenje ponovljeno n puta. Pravila za proizvod, količnik i stepen stepena — i zašto je a⁰ = 1.', ex: ['2³ · 2² = 2⁵', '= 32', '(3²)³ = 3⁶ = 729'] },
-    { n: 'Kvadratni koren', g: 7, area: 'Algebra', f: `${R('a · b')} = ${R('a')} · ${R('b')}`, d: 'Obrnuta operacija od kvadriranja. Delimično korenovanje, racionalisanje i iracionalni brojevi poput √2.', ex: [`${R(50)} = ${R('25 · 2')}`, `= 5${R(2)}`, '≈ 7,07'] },
-    { n: 'Pitagorina teorema', g: 7, area: 'Geometrija', f: 'a² + b² = c²', d: 'Most između algebre i geometrije: od pravouglog trougla do rastojanja dve tačke u koordinatnom sistemu.', ex: ['a = 3, b = 4', 'c² = 9 + 16 = 25', 'c = 5'] },
-    { n: 'Polinomi', g: 7, area: 'Algebra', f: '(a + b)² = a² + 2ab + b²', d: 'Sabiranje i množenje polinoma, kvadrat binoma i razlika kvadrata — formule koje se mogu i nacrtati kao kvadrat.', ex: ['(x + 3)²', '= x² + 6x + 9', '49 − 9 = 4 · 10 = 40'] },
-    { n: 'Linearne jednačine', g: 8, area: 'Algebra', f: `ax + b = 0 ⇒ x = −${F('b', 'a')}`, d: 'Jednačina je vaga: šta uradiš levo, uradi i desno. Jednačine, nejednačine i tekstualni zadaci.', ex: ['3x − 12 = 0', '3x = 12', 'x = 4'] },
-    { n: 'Linearna funkcija', g: 8, area: 'Funkcije', f: 'y = kx + n', d: 'Prava u koordinatnom sistemu: koeficijent pravca k, odsečak n, nula funkcije i crtanje grafika iz dve tačke.', ex: [`k = ${F('y₂ − y₁', 'x₂ − x₁')}`, `A(1, 3), B(3, 7) ⇒ k = 2`, 'y = 2x + 1'] },
-    { n: 'Sistemi jednačina', g: 8, area: 'Algebra', f: 'x + y = 5,  x − y = 1', d: 'Dve prave, jedna presečna tačka. Metoda zamene, suprotnih koeficijenata i grafička metoda.', ex: ['sabiranjem: 2x = 6', 'x = 3', 'y = 5 − 3 = 2'] },
-    { n: 'Kvadratna funkcija', g: 9, area: 'Funkcije', f: `x<sub>1,2</sub> = ${F(`−b ± ${R('b² − 4ac')}`, '2a')}`, d: 'Parabola, diskriminanta, teme i Vijetove formule — gradivo koje se najčešće javlja na prijemnom ispitu.', ex: ['x² − 5x + 6 = 0', 'D = 25 − 24 = 1', 'x₁ = 3, x₂ = 2'] },
-    { n: 'Trigonometrija', g: 9, area: 'Trigonometrija', f: 'sin²α + cos²α = 1', d: 'Jedinična kružnica, vrednosti za 30°, 45° i 60°, adicione formule i trigonometrijske jednačine.', ex: [`sin 30° = ${F(1, 2)}`, `cos 30° = ${F(R(3), 2)}`, `${F(1, 4)} + ${F(3, 4)} = 1 ✓`] }
+    { k: 'razlomci', n: 'Razlomci', g: 5, area: 'Aritmetika', top: 210, f: `${F('a', 'b')} + ${F('c', 'd')} = ${F('ad + bc', 'bd')}`, d: 'Deo celine koji se može nacrtati, preseći i sabrati. Proširivanje, skraćivanje, sabiranje i množenje — razlomak prvo vidimo, pa tek onda računamo.', ex: [`${F(1, 2)} + ${F(1, 3)}`, `${F(3, 6)} + ${F(2, 6)}`, `${F(5, 6)}`] },
+    { k: 'ugao', n: 'Ugao', g: 5, area: 'Geometrija', top: 165, f: 'α + β = 180°', d: 'Merenje uglova uglomerom, vrste uglova i odnos susednih, uporednih i unakrsnih uglova. Prvi susret sa pravom geometrijom.', ex: ['α = 65°', 'β = 180° − 65°', 'β = 115°'] },
+    { k: 'simetrija', n: 'Osna simetrija', g: 5, area: 'Geometrija', top: 115, f: 's ⟂ AA′, &nbsp;d(A, s) = d(A′, s)', d: 'Preslikavanje kao u ogledalu: konstrukcija simetrale duži i ugla, prepoznavanje simetričnih figura oko nas.', ex: ['A(2, 3), osa y', 'A′(−2, 3)', 'AA′ = 4'] },
+    { k: 'celi', n: 'Celi brojevi', g: 6, area: 'Aritmetika', top: 125, f: '(−a) · (−b) = a · b', d: 'Brojevna prava levo od nule: suprotni brojevi, apsolutna vrednost i pravila znaka koja se razumeju, a ne napamet uče.', ex: ['(−3) · (−4) = 12', '−3 − (−4) = −3 + 4', '= 1'] },
+    { k: 'trougao', n: 'Trougao', g: 6, area: 'Geometrija', top: 140, f: 'α + β + γ = 180°', d: 'Vrste trouglova, zbir uglova, visine i konstrukcije šestarom i lenjirom — figura od koje sve počinje.', ex: ['α = 50°, β = 60°', 'γ = 180° − 110°', 'γ = 70°'] },
+    { k: 'procenti', n: 'Procenti i proporcije', g: 6, area: 'Aritmetika', top: 180, f: `p% od a = a · ${F('p', '100')}`, d: 'Popusti, kamate, razmere na mapi i recepti. Proporcija je „unakrsno množenje” koje ima smisla.', ex: [`20% od 350 = 350 · ${F(20, 100)}`, '= 70', '3 : x = 6 : 8 ⇒ x = 4'] },
+    { k: 'stepeni', n: 'Stepeni i koren', g: 7, area: 'Algebra', top: 230, f: `a<sup>m</sup> · a<sup>n</sup> = a<sup>m + n</sup>, &nbsp;${R('ab')} = ${R('a')}${R('b')}`, d: 'Množenje ponovljeno n puta i obrnuta operacija — koren. Pravila za stepene, delimično korenovanje i iracionalni brojevi poput √2.', ex: ['2³ · 2² = 2⁵ = 32', `${R(50)} = ${R('25 · 2')}`, `= 5${R(2)} ≈ 7,07`] },
+    { k: 'pitagora', n: 'Pitagorina teorema', g: 7, area: 'Geometrija', top: 237, f: 'a² + b² = c²', d: 'Most između algebre i geometrije: od pravouglog trougla do rastojanja dve tačke u koordinatnom sistemu.', ex: ['a = 3, b = 4', 'c² = 9 + 16 = 25', 'c = 5'] },
+    { k: 'polinomi', n: 'Polinomi', g: 7, area: 'Algebra', top: 220, f: '(a + b)² = a² + 2ab + b²', d: 'Sabiranje i množenje polinoma, kvadrat binoma i razlika kvadrata — formule koje se mogu i nacrtati kao kvadrat.', ex: ['(x + 3)²', '= x² + 6x + 9', '49 − 9 = 4 · 10 = 40'] },
+    { k: 'krug', n: 'Krug', g: 7, area: 'Geometrija', top: 206, f: 'O = 2rπ, &nbsp;P = r²π', d: 'Obim i površina kruga, centralni i periferijski ugao, tangenta — i broj π koji se nikad ne završava.', ex: ['r = 5 cm', 'O = 10π ≈ 31,4 cm', 'P = 25π ≈ 78,5 cm²'] },
+    { k: 'jednacine', n: 'Linearne jednačine', g: 8, area: 'Algebra', top: 190, f: `ax + b = 0 ⇒ x = −${F('b', 'a')}`, d: 'Jednačina je vaga: šta uradiš levo, uradi i desno. Jednačine, nejednačine, sistemi i tekstualni zadaci.', ex: ['3x − 12 = 0', '3x = 12', 'x = 4'] },
+    { k: 'funkcija', n: 'Linearna funkcija', g: 8, area: 'Funkcije', top: 160, f: 'y = kx + n', d: 'Prava u koordinatnom sistemu: koeficijent pravca k, odsečak n, nula funkcije i crtanje grafika iz dve tačke.', ex: [`k = ${F('y₂ − y₁', 'x₂ − x₁')}`, 'A(1, 3), B(3, 7) ⇒ k = 2', 'y = 2x + 1'] },
+    { k: 'tela', n: 'Prizma, valjak i kupa', g: 8, area: 'Stereometrija', top: 100, f: `V = B · H, &nbsp;V<sub>kupe</sub> = ${F('r²πH', '3')}`, d: 'Mreža, površina i zapremina tela. Geometrija koja se može iseći od papira, složiti na stolu i držati u rukama.', ex: ['kocka, a = 4 cm', 'V = a³ = 64 cm³', 'P = 6a² = 96 cm²'] },
+    { k: 'kvadratna', n: 'Kvadratna funkcija', g: 9, area: 'Funkcije', top: 140, f: `x<sub>1,2</sub> = ${F(`−b ± ${R('b² − 4ac')}`, '2a')}`, d: 'Parabola, diskriminanta, teme i Vijetove formule — gradivo koje se najčešće javlja na prijemnom ispitu.', ex: ['x² − 5x + 6 = 0', 'D = 25 − 24 = 1', 'x₁ = 3, x₂ = 2'] }
   ];
   const gLabel = g => (g === 9 ? 'Prijemni' : g + '. razred');
-  const tops = [210, 125, 180, 230, 150, 237, 220, 190, 160, 180, 140, 222];
-  function shape(i, c) {
-    switch (i) {
-      case 0: return `<circle class="s" cx="${c}" cy="250" r="40"/><path class="s" d="M${c} 250 V210 M${c} 250 L${c + 34.64} 270 M${c} 250 L${c - 34.64} 270"/><path class="s hatch" d="M${c} 250 L${c} 210 A40 40 0 0 1 ${c + 34.64} 270 Z" style="fill:url(#hatchInk)"/><path class="s t" d="M${c - 30} 300 H${c + 30}"/>`;
-      case 1: { let s = `<path class="s" d="M${c} 300 V125 M${c - 5} 134 L${c} 125 L${c + 5} 134"/>`; for (let k = 0; k < 10; k++) s += `<path class="s t" d="M${c - (k === 5 ? 12 : 6)} ${290 - k * 17} H${c + (k === 5 ? 12 : 6)}"/>`; return s + `<text class="txt" x="${c + 18}" y="209" style="font-size:11px">0</text><text class="txt" x="${c + 16}" y="146" style="font-size:12px">+</text><text class="txt" x="${c + 16}" y="292" style="font-size:12px">−</text>`; }
-      case 2: return `<circle class="s" cx="${c - 16}" cy="198" r="11"/><circle class="s" cx="${c + 16}" cy="252" r="11"/><path class="s" d="M${c + 24} 180 L${c - 24} 270"/><rect class="s" x="${c - 40}" y="282" width="80" height="14"/><rect class="s hatch" x="${c - 40}" y="282" width="48" height="14" style="fill:url(#hatchInk)"/>`;
-      case 3: return `<rect class="s" x="${c - 40}" y="290" width="10" height="10"/><rect class="s" x="${c - 27}" y="280" width="20" height="20"/><rect class="s hatch" x="${c - 4}" y="260" width="40" height="40" style="fill:url(#hatchInk)"/><text class="txt it" x="${c - 10}" y="248" style="font-size:20px">2ⁿ</text>`;
-      case 4: return `<path class="s" d="M${c - 42} 252 L${c - 32} 246 L${c - 18} 292 L${c - 2} 150 H${c + 42}" style="stroke-width:2"/><text class="txt it" x="${c + 6}" y="220" style="font-size:34px">x</text>`;
-      case 5: return `<path class="s" d="M${c - 15} 300 L${c + 21} 300 L${c - 15} 273 Z"/><path class="s" d="M${c - 15} 273 L${c - 42} 273 L${c - 42} 300 L${c - 15} 300"/><path class="s hatch" d="M${c - 15} 273 L${c + 12} 237 L${c + 48} 264 L${c + 21} 300 Z" style="fill:url(#hatchInk)"/><path class="s t" d="M${c - 15} 292 H${c - 7} V300"/>`;
-      case 6: return `<path class="s" d="M${c - 40} 220 H${c + 40} V300 H${c - 40} Z M${c + 10} 220 V300 M${c - 40} 270 H${c + 40}"/><path class="s hatch" d="M${c - 40} 220 H${c + 10} V270 H${c - 40} Z" style="fill:url(#hatchInk)"/>`;
-      case 7: return `<path class="s" d="M${c} 300 V190 M${c - 42} 200 H${c + 42} M${c - 18} 300 L${c} 288 L${c + 18} 300"/><path class="s t" d="M${c - 36} 200 L${c - 46} 238 M${c - 36} 200 L${c - 26} 238 M${c + 36} 200 L${c + 26} 238 M${c + 36} 200 L${c + 46} 238"/><path class="s" d="M${c - 48} 238 Q${c - 36} 252 ${c - 24} 238 Z M${c + 24} 238 Q${c + 36} 252 ${c + 48} 238 Z"/><text class="txt it" x="${c - 36}" y="232" text-anchor="middle" style="font-size:18px">x</text><text class="txt it" x="${c + 36}" y="232" text-anchor="middle" style="font-size:16px">4</text><circle class="f" cx="${c}" cy="200" r="3"/>`;
-      case 8: return `<path class="s t" d="M${c - 44} 280 H${c + 44} M${c - 25} 300 V160"/><path class="s" d="M${c - 40} 290 L${c + 40} 170"/><circle class="f" cx="${c - 25}" cy="267.5" r="3"/><circle class="f" cx="${c - 6.7}" cy="280" r="3"/>`;
-      case 9: return `<path class="s t" d="M${c - 44} 290 H${c + 44} M${c - 36} 300 V176"/><path class="s" d="M${c - 42} 280 L${c + 42} 180 M${c - 42} 180 L${c + 42} 280"/><circle class="f" cx="${c}" cy="230" r="3.5"/><circle class="s" cx="${c}" cy="230" r="9"/>`;
-      case 10: return `<path class="s t" d="M${c - 44} 255 H${c + 44} M${c} 300 V136"/><path class="s" d="M${c - 38} 140 Q${c} 420 ${c + 38} 140" style="stroke-width:1.8"/><circle class="f" cx="${c - 25.6}" cy="255" r="3"/><circle class="f" cx="${c + 25.6}" cy="255" r="3"/>`;
-      case 11: return `<path class="s t" d="M${c - 44} 258 H${c + 44} M${c} 300 V214"/><circle class="s" cx="${c}" cy="258" r="36"/><path class="s" d="M${c} 258 L${c + 25.5} 232.5"/><path class="s t d" d="M${c + 25.5} 232.5 V258"/><path class="s t" d="M${c + 12} 258 A12 12 0 0 0 ${c + 8.5} 249.5"/><circle class="f" cx="${c + 25.5}" cy="232.5" r="3"/>`;
-    }
-  }
+  const SH = {
+    razlomci: c => `<circle class="s" cx="${c}" cy="250" r="40"/><path class="s" d="M${c} 250 V210 M${c} 250 L${c + 34.64} 270 M${c} 250 L${c - 34.64} 270"/><path class="s hatch" d="M${c} 250 L${c} 210 A40 40 0 0 1 ${c + 34.64} 270 Z" style="fill:url(#hatchInk)"/>`,
+    ugao: c => `<path class="s" d="M${c - 45} 300 H${c + 48} M${c - 45} 300 L${c + 20} 165"/><path class="s t" d="M${c - 12} 300 A33 33 0 0 0 ${c - 30.7} 270.3"/><circle class="f" cx="${c - 45}" cy="300" r="3"/><text class="txt it" x="${c - 18}" y="292" style="font-size:16px">α</text>`,
+    simetrija: c => `<path class="s" d="M${c} 140 L${c + 40} 215 L${c} 296 L${c - 40} 215 Z"/><path class="s t d" d="M${c} 115 V300"/><path class="s t" d="M${c + 17} 172 l6 -4 M${c - 17} 172 l-6 -4 M${c + 17} 258 l6 4 M${c - 17} 258 l-6 4"/>`,
+    celi: c => { let s = `<path class="s" d="M${c} 300 V125 M${c - 5} 134 L${c} 125 L${c + 5} 134"/>`; for (let k = 0; k < 10; k++) s += `<path class="s t" d="M${c - (k === 5 ? 12 : 6)} ${290 - k * 17} H${c + (k === 5 ? 12 : 6)}"/>`; return s + `<text class="txt" x="${c + 18}" y="209" style="font-size:11px">0</text><text class="txt" x="${c + 16}" y="146" style="font-size:12px">+</text><text class="txt" x="${c + 16}" y="292" style="font-size:12px">−</text>`; },
+    trougao: c => `<path class="s" d="M${c - 45} 300 L${c + 45} 300 L${c + 14} 140 Z"/><path class="s t d" d="M${c + 14} 140 V300"/><path class="s t" d="M${c + 14} 290 H${c + 24} V300"/>`,
+    procenti: c => `<circle class="s" cx="${c - 16}" cy="198" r="11"/><circle class="s" cx="${c + 16}" cy="252" r="11"/><path class="s" d="M${c + 24} 180 L${c - 24} 270"/><rect class="s" x="${c - 40}" y="282" width="80" height="14"/><rect class="s hatch" x="${c - 40}" y="282" width="48" height="14" style="fill:url(#hatchInk)"/>`,
+    stepeni: c => `<rect class="s" x="${c - 40}" y="290" width="10" height="10"/><rect class="s" x="${c - 27}" y="280" width="20" height="20"/><rect class="s hatch" x="${c - 4}" y="260" width="40" height="40" style="fill:url(#hatchInk)"/><text class="txt it" x="${c - 30}" y="250" style="font-size:20px">2ⁿ, √x</text>`,
+    pitagora: c => `<path class="s" d="M${c - 15} 300 L${c + 21} 300 L${c - 15} 273 Z"/><path class="s" d="M${c - 15} 273 L${c - 42} 273 L${c - 42} 300 L${c - 15} 300"/><path class="s hatch" d="M${c - 15} 273 L${c + 12} 237 L${c + 48} 264 L${c + 21} 300 Z" style="fill:url(#hatchInk)"/><path class="s t" d="M${c - 15} 292 H${c - 7} V300"/>`,
+    polinomi: c => `<path class="s" d="M${c - 40} 220 H${c + 40} V300 H${c - 40} Z M${c + 10} 220 V300 M${c - 40} 270 H${c + 40}"/><path class="s hatch" d="M${c - 40} 220 H${c + 10} V270 H${c - 40} Z" style="fill:url(#hatchInk)"/>`,
+    krug: c => `<circle class="s" cx="${c}" cy="250" r="44"/><circle class="f" cx="${c}" cy="250" r="3"/><path class="s" d="M${c - 50} 206 H${c + 50}"/><path class="s t" d="M${c} 250 V206 M${c - 38.1} 272 L${c + 31.1} 281.1"/>`,
+    jednacine: c => `<path class="s" d="M${c} 300 V190 M${c - 42} 200 H${c + 42} M${c - 18} 300 L${c} 288 L${c + 18} 300"/><path class="s t" d="M${c - 36} 200 L${c - 46} 238 M${c - 36} 200 L${c - 26} 238 M${c + 36} 200 L${c + 26} 238 M${c + 36} 200 L${c + 46} 238"/><path class="s" d="M${c - 48} 238 Q${c - 36} 252 ${c - 24} 238 Z M${c + 24} 238 Q${c + 36} 252 ${c + 48} 238 Z"/><text class="txt it" x="${c - 36}" y="232" text-anchor="middle" style="font-size:18px">x</text><text class="txt it" x="${c + 36}" y="232" text-anchor="middle" style="font-size:16px">4</text><circle class="f" cx="${c}" cy="200" r="3"/>`,
+    funkcija: c => `<path class="s t" d="M${c - 44} 280 H${c + 44} M${c - 25} 300 V160"/><path class="s" d="M${c - 40} 290 L${c + 40} 170"/><circle class="f" cx="${c - 25}" cy="267.5" r="3"/><circle class="f" cx="${c - 6.7}" cy="280" r="3"/>`,
+    tela: c => `<path class="s hatch" d="M${c + 20} 120 L${c + 44} 100 V280 L${c + 20} 300 Z" style="fill:url(#hatchInk)"/><path class="s" d="M${c - 40} 120 H${c + 20} V300 H${c - 40} Z M${c - 40} 120 L${c - 16} 100 H${c + 44} V280 L${c + 20} 300 M${c + 20} 120 L${c + 44} 100"/><path class="s t d" d="M${c - 16} 100 V280 H${c + 44} M${c - 16} 280 L${c - 40} 300"/><path class="s t" d="M${c - 40} 160 H${c + 20} M${c - 40} 200 H${c + 20} M${c - 40} 240 H${c + 20}"/>`,
+    kvadratna: c => `<path class="s t" d="M${c - 44} 255 H${c + 44} M${c} 300 V136"/><path class="s" d="M${c - 38} 140 Q${c} 420 ${c + 38} 140" style="stroke-width:1.8"/><circle class="f" cx="${c - 25.6}" cy="255" r="3"/><circle class="f" cx="${c + 25.6}" cy="255" r="3"/>`
+  };
+  const shape = (i, c) => SH[topics[i].k](c);
   const defs = `<defs>
     <pattern id="hatchInk" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" stroke="#1a1a18" stroke-width="1" opacity=".5"/></pattern>
     <pattern id="hatchBp" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" stroke="#1d46c9" stroke-width="1" opacity=".6"/></pattern>
   </defs>`;
-  const slot = i => 55 + i * 99;
+  const SKW = 1400;
+  const slot = i => 50 + i * 100;
   const sky = $('#sky');
-  let skyHtml = defs + `<path class="s" d="M0 300 H1200"/>`;
-  for (let x = 0; x <= 1200; x += 20) skyHtml += `<path class="s t" d="M${x} 300 V${x % 100 === 0 ? 312 : 305}"/>`;
+  sky.setAttribute('viewBox', `0 0 ${SKW} 330`);
+  let skyHtml = defs + `<path class="s" d="M0 300 H${SKW}"/>`;
+  for (let x = 0; x <= SKW; x += 20) skyHtml += `<path class="s t" d="M${x} 300 V${x % 100 === 0 ? 312 : 305}"/>`;
   topics.forEach((t, i) => {
     const c = slot(i);
-    skyHtml += `<g class="obj" data-i="${i}" tabindex="0" role="button" aria-label="${t.n}, ${gLabel(t.g)}"><rect class="hit" x="${c - 49}" y="80" width="98" height="225"/><g class="shp">${shape(i, c)}</g><text class="num" x="${c}" y="${tops[i] - 16}" text-anchor="middle">${String(i + 1).padStart(2, '0')}</text></g>`;
+    skyHtml += `<g class="obj" data-i="${i}" tabindex="0" role="button" aria-label="${t.n}, ${gLabel(t.g)}"><rect class="hit" x="${c - 50}" y="80" width="100" height="225"/><g class="shp">${shape(i, c)}</g><text class="num" x="${c}" y="${t.top - 16}" text-anchor="middle">${String(i + 1).padStart(2, '0')}</text></g>`;
   });
   sky.innerHTML = skyHtml;
 
   // footer horizont
   const fSky = $('#fSky');
+  fSky.setAttribute('viewBox', `0 0 ${SKW} 220`);
   let fh = `<defs><pattern id="hatchF" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" stroke="currentColor" stroke-width="1" opacity=".5"/></pattern></defs><g transform="translate(0 -90)">`;
   topics.forEach((t, i) => fh += shape(i, slot(i)).replace(/hatchInk/g, 'hatchF'));
-  fh += `<path class="s" d="M0 300 H1200"/></g>`;
+  fh += `<path class="s" d="M0 300 H${SKW}"/></g>`;
   fSky.innerHTML = fh;
 
   // filteri
@@ -223,7 +233,7 @@
     $('#dGrade').textContent = gLabel(t.g);
     $('#dEx').innerHTML = t.ex.map(s => `<li>${s}</li>`).join('');
     $('#dCorner').textContent = `SL. ${String(i + 1).padStart(2, '0')}`;
-    $('#dViz').setAttribute('viewBox', `${slot(i) - 75} 100 150 210`);
+    $('#dViz').setAttribute('viewBox', `${slot(i) - 80} 92 160 218`);
     $('#dViz').innerHTML = defs.replace(/#1a1a18/g, '#1d46c9').replace(/hatchInk/g, 'hatchV').replace(/hatchBp/g, 'hatchV2') + shape(i, slot(i)).replace(/hatchInk/g, 'hatchV') + `<path class="s t" d="M${slot(i) - 75} 300 H${slot(i) + 75}"/>`;
     if (anim) {
       const b = $('#dBody'), v = $('#dViz');
@@ -300,10 +310,19 @@
       ['Zbir aritmetičkog niza', `S<sub>n</sub> = ${F('n(a₁ + a<sub>n</sub>)', '2')}`, `1 + 2 + … + 100 = ${F('100 · 101', '2')} = 5050`]
     ]
   };
+  sheet.geo = [
+    ['Pravougaonik', 'O = 2(a + b), &nbsp;P = a · b', 'a = 5 cm, b = 3 cm → O = 16 cm, P = 15 cm²'],
+    ['Kvadrat i dijagonala', `P = a², &nbsp;d = a${R(2)}`, `a = 4 → P = 16, &nbsp;d = 4${R(2)} ≈ 5,66`],
+    ['Trapez', `P = ${F('(a + b) · h', '2')}`, 'a = 8, b = 4, h = 3 → P = 18'],
+    ['Krug', 'O = 2rπ, &nbsp;P = r²π', 'r = 5 cm → O ≈ 31,4 cm, &nbsp;P ≈ 78,5 cm²'],
+    ['Kocka i kvadar', 'V = a³, &nbsp;V = a · b · c', 'a = 4 → V = 64, &nbsp;P = 6a² = 96'],
+    ['Kupa', `V = ${F('r²πH', '3')}`, 'r = 3, H = 4 → V = 12π ≈ 37,7']
+  ];
+  const sLabel = g => (g === 'geo' ? 'Geometrija' : gLabel(+g));
   const fTabs = $('#fTabs'), fGrid = $('#fGrid');
   const fTotal = Object.values(sheet).reduce((s, a) => s + a.length, 0);
   $$('[data-fcount]').forEach(el => el.dataset.to = fTotal);
-  fTabs.innerHTML = [5, 6, 7, 8, 9].map((g, k) => `<button data-g="${g}" class="${k === 0 ? 'on' : ''}">${gLabel(g)}<sup>${sheet[g].length}</sup></button>`).join('');
+  fTabs.innerHTML = ['5', '6', '7', '8', 'geo', '9'].map((g, k) => `<button data-g="${g}" class="${k === 0 ? 'on' : ''}">${sLabel(g)}<sup>${sheet[g].length}</sup></button>`).join('');
   function renderSheet(g, anim) {
     fGrid.innerHTML = sheet[g].map(([n, fx, ex], k) => `<article class="fc"><div class="top"><span>${n}</span><span>${String(k + 1).padStart(2, '0')}</span></div><div class="fx">${fx}</div><div class="ex"><b>Primer</b>${ex}</div></article>`).join('');
     if (anim && hasGSAP && !reduce) gsap.from($$('.fc', fGrid), { opacity: 0, y: 20, duration: .7, stagger: .06, ease: 'expo.out' });
@@ -311,9 +330,9 @@
   fTabs.addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b) return;
     $$('button', fTabs).forEach(x => x.classList.toggle('on', x === b));
-    renderSheet(+b.dataset.g, true);
+    renderSheet(b.dataset.g, true);
   });
-  renderSheet(5, false);
+  renderSheet('5', false);
 
   /* ================= TRENER ================= */
   const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
@@ -335,6 +354,14 @@
     ste() {
       const b = pick([2, 3, 5, 7, 10]), m = rnd(2, 7), n = rnd(2, 7);
       return { q: `${b}<sup>${m}</sup> · ${b}<sup>${n}</sup> = ${b}<sup>?</sup>`, lab: '? =', ans: m + n, steps: ['a<sup>m</sup> · a<sup>n</sup> = a<sup>m + n</sup>', `${m} + ${n} = ${m + n}`, `${b}<sup>${m}</sup> · ${b}<sup>${n}</sup> = ${b}<sup>${m + n}</sup>`] };
+    },
+    ugao() {
+      const a = rnd(25, 95), b = rnd(20, 160 - a), c = 180 - a - b;
+      return { q: `α = ${a}°, &nbsp;β = ${b}°, &nbsp;γ = ?`, lab: 'γ =', ans: c, steps: ['α + β + γ = 180°', `γ = 180° − ${a}° − ${b}°`, `γ = ${c}°`] };
+    },
+    krug() {
+      const r = rnd(2, 15);
+      return { q: `r = ${r} cm, &nbsp;O = ?·π`, lab: '? =', ans: 2 * r, steps: ['O = 2rπ', `O = 2 · ${r} · π`, `O = ${2 * r}π ≈ ${fmt((2 * r * Math.PI).toFixed(2))} cm`] };
     },
     pit() {
       const [a, b, c] = pick([[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17], [9, 12, 15], [7, 24, 25], [12, 16, 20], [20, 21, 29]]);
@@ -369,13 +396,18 @@
   newTask();
 
   /* ================= NAČIN RADA — JEDNAČINA ================= */
-  const kon = $('#kon'), kTicks = $$('#kTicks i'), lis = $$('#steps li');
+  $('#kTabs').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    $$('#kTabs button').forEach(x => x.classList.toggle('on', x === b));
+    $('#kon').classList.toggle('off', b.dataset.k !== 'eq'); $('#kon2').classList.toggle('off', b.dataset.k !== 'geo');
+  });
+  const kTicks = $$('#kTicks i'), lis = $$('#steps li');
   const names = lis.map(li => li.querySelector('h3').textContent);
   function stage(n) {
-    kon.classList.remove('st1', 'st2', 'st3', 'st4'); kon.classList.add('st' + n);
+    $$('svg.k').forEach(k => { k.classList.remove('st1', 'st2', 'st3', 'st4'); k.classList.add('st' + n); });
     kTicks.forEach((t, k) => t.classList.toggle('on', k < n));
     lis.forEach(li => li.classList.toggle('on', +li.dataset.s === n));
-    $('#kStage').textContent = `KORAK 0${n} / 04`;
+    $$('.kStage').forEach(e => e.textContent = `KORAK 0${n} / 04`);
     $('#kName').textContent = names[n - 1];
   }
   const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) stage(+e.target.dataset.s); }), { rootMargin: '-45% 0px -45% 0px' });
