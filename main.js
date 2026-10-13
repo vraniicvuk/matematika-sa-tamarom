@@ -399,7 +399,7 @@
   $('#kTabs').addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b) return;
     $$('#kTabs button').forEach(x => x.classList.toggle('on', x === b));
-    $('#kon').classList.toggle('off', b.dataset.k !== 'eq'); $('#kon2').classList.toggle('off', b.dataset.k !== 'geo');
+    $('#kon').classList.toggle('off', b.dataset.k !== 'eq'); $('#kon2').classList.toggle('off', b.dataset.k !== 'geo'); $('#kRight').textContent = b.dataset.k === 'geo' ? 'Δ ABC, c = 6 cm' : 'x = 9';
   });
   const kTicks = $$('#kTicks i'), lis = $$('#steps li');
   const names = lis.map(li => li.querySelector('h3').textContent);
